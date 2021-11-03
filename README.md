@@ -1,6 +1,14 @@
 # ghutils
 Some GitHub utilities that I needed to write.
 
+Make sure you have python3 and run (in the project root folder):
+
+```
+pip3 install -r requirements.txt
+```
+
+Now you should be able to run the script(s).
+
 ghprmetrics: Pull Request Metrics
 =================================
 
