@@ -35,7 +35,7 @@ from docopt import docopt
 import re
 
 
-def prs_with_metrics_iterator(token, enterprise, repo_regex, title_regex, state, only_merged, max_count, max_days, creator_regex):
+def prs_with_metrics_iterator(token, enterprise, repo_regex, title_skip_regex, state, only_merged, max_count, max_days, creator_regex):
     gh = Github(base_url="https://%s/api/v3" % enterprise, login_or_token=token)
     for repo in gh.get_user().get_repos():
         total_count_of_prs_traversed = 0
@@ -47,7 +47,7 @@ def prs_with_metrics_iterator(token, enterprise, repo_regex, title_regex, state,
             if not re.search(creator_regex, pull.user.login):
                 continue  # skip
             title = pull.title
-            if re.search(title_regex, title):
+            if re.search(title_skip_regex, title):
                 continue  # skip
             if total_count_of_prs_traversed >= max_count:  # enough work, we can abort
                 break
