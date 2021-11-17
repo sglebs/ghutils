@@ -71,10 +71,11 @@ def prs_with_metrics_iterator(token, enterprise, repo_regex, title_skip_regex, s
             total_time_between_reviews = wait_time_for_last_review - wait_time_for_first_review
             yield [repo.name, pull.id, title, pull.state, creation_date, pull.user.login, pull.last_modified,
                     pull.merged, pull.merged_at, "-" if pull.merged_by is None else pull.merged_by.login,
-                    pull.changed_files, pull.comments, pull.commits, pull.deletions,
-                    review_request_count, review_count, int(wait_time_for_first_review.total_seconds() / 60),
-                   int(wait_time_for_last_review.total_seconds() / 60),
-                   int(total_time_between_reviews.total_seconds() / 60)]
+                    pull.changed_files, pull.comments, pull.commits, pull.deletions, pull.additions,
+                    pull.deletions + pull.additions, review_request_count, review_count,
+                    int(wait_time_for_first_review.total_seconds() / 60),
+                    int(wait_time_for_last_review.total_seconds() / 60),
+                    int(total_time_between_reviews.total_seconds() / 60)]
 
             total_count_of_prs_traversed += 1
 
@@ -86,9 +87,10 @@ def main():
     print(arguments)
     csv_file = open(arguments["--outputCSV"], 'w')
     csv_writer = csv.writer(csv_file)
-    csv_writer.writerow(["Repository", "PR id", "PR title", "PR state", "PR Creation Date", "PR Creator",
-                         "PR Last Modified", "PR is merged", "PR Date Merged", "PR Merged By", "Count Files Changed",
-                         "Count Comments", "Count Commits", "Count Deletions", "Count Review Requests", "Count Reviews",
+    csv_writer.writerow(["Repository", "PR ID", "PR Title", "PR State", "PR Creation Date", "PR Creator",
+                         "PR Last Modified", "PR is Merged?", "PR Date Merged", "PR Merged By", "Count Files Changed",
+                         "Count Comments", "Count Commits", "Count Line Deletions", "Count Line Additions",
+                         "Count Lines Touched", "Count Review Requests", "Count Reviews",
                          "Minutes to First Review", "Minutes to Last Review", "Minutes Between Reviews"])
     for pr_data in  \
             prs_with_metrics_iterator(arguments["--token"], arguments["--enterprise"],
